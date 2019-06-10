@@ -1,4 +1,4 @@
-export default function interpolate(
+export function interpolate(
   t: number,
   degree: number,
   points: Array<[number, number]>,

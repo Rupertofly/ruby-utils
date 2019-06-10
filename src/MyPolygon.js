@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const cl = require("js-clipper");
-const lodash_1 = require("lodash");
-const JSC = require("./JSClipperHelper");
-const PGN = require("./polygonNamespace");
-class MyPolygon {
+import * as cl from 'js-clipper';
+import _ from 'lodash';
+import * as JSC from './JSClipperHelper';
+import * as PGN from './polygonNamespace';
+export default class MyPolygon {
     constructor(polygon, contour) {
         this.polygon = [];
         this.contours = [];
@@ -29,7 +27,7 @@ class MyPolygon {
                 });
             }
         }
-        else if (lodash_1.default.isArray(polygon)) {
+        else if (_.isArray(polygon)) {
             this.polygon = polygon;
         }
         else {
@@ -127,5 +125,4 @@ class MyPolygon {
         }
     }
 }
-exports.default = MyPolygon;
 //# sourceMappingURL=MyPolygon.js.map

@@ -1,4 +1,4 @@
-import * as sm from 'simplex-noise';
+import sm from 'simplex-noise';
 let p5 = new sm();
 
 export default class Noise {

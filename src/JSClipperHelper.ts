@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import * as cl from 'js-clipper';
-import MyPolygon from './MyPolygon';
+import { MyPolygon } from './MyPolygon';
 import { lp, point } from './utils';
 export function cleanPolygon(polygon: lp, ammount: number) {
   let adjPoly = toClipperFormat(polygon);

@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const sm = require("simplex-noise");
+import * as sm from 'simplex-noise';
 let p5 = new sm();
-class Noise {
+export default class Noise {
     constructor(...args) {
         if (typeof args[0] !== 'function') {
             this.thisFunc = (x, y) => p5.noise2D(x, y);
@@ -26,5 +24,4 @@ class Noise {
         return this.thisFunc(x, y);
     }
 }
-exports.default = Noise;
 //# sourceMappingURL=noise.js.map

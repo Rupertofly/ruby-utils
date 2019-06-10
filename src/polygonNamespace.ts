@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
-import bSpline from './bSpline';
-import MyPolygon from './MyPolygon';
+import { interpolate } from './bSpline';
+import { MyPolygon } from './MyPolygon';
 import { lp, point } from './utils';
+const bSpline = interpolate;
 type loop = lp;
 function sqr(x: number) {
   return x * x;

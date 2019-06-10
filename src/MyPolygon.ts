@@ -8,7 +8,7 @@ type point = [number, number];
 type loop = point[];
 type lp = loop;
 type ctx = CanvasRenderingContext2D;
-export default class MyPolygon {
+export class MyPolygon {
   public polygon: Array<[number, number]> = [];
   public contours: Array<Array<[number, number]>> = [];
 

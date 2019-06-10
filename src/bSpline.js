@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function interpolate(t, degree, points, closed = false, knots, weights, result) {
+export default function interpolate(t, degree, points, closed = false, knots, weights, result) {
     let pts = [...points];
     if (closed) {
         pts = [...points, ...points.slice(0, Math.min(degree, points.length))];
@@ -82,5 +80,4 @@ function interpolate(t, degree, points, closed = false, knots, weights, result) 
     }
     return result;
 }
-exports.default = interpolate;
 //# sourceMappingURL=bSpline.js.map

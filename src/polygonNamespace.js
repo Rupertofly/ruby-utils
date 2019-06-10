@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const d3 = require("d3");
-const lodash_1 = require("lodash");
-const bSpline_1 = require("./bSpline");
-const MyPolygon_1 = require("./MyPolygon");
+import * as d3 from 'd3';
+import _ from 'lodash';
+import bSpline from './bSpline';
+import MyPolygon from './MyPolygon';
 function sqr(x) {
     return x * x;
 }
@@ -26,44 +24,41 @@ function distToSegmentSquared(p, v, w) {
  * @param {[Number,Number]} second line vertice
  * @returns {Number} Distance
  */
-function distToSegment(p, v, w) {
+export function distToSegment(p, v, w) {
     return Math.sqrt(distToSegmentSquared(p, v, w));
 }
-exports.distToSegment = distToSegment;
 /**
  * Returns the minimum distance between the centroid of a polygon and an edge
  *
  * @param {[Number, Number][]} poly polygon
  *
  */
-function getMinDist(poly) {
+export function getMinDist(poly) {
     const c = d3.polygonCentroid(poly);
-    const r = lodash_1.default.range(poly.length).map(i => {
+    const r = _.range(poly.length).map(i => {
         const thisP = poly[i];
         const nextP = poly[(i + 1) % poly.length];
         return distToSegment(c, thisP, nextP);
     });
     return Math.min(...r);
 }
-exports.getMinDist = getMinDist;
-function smoothBSpline(polygon, order, resolution) {
+export function smoothBSpline(polygon, order, resolution) {
     let output = [];
     let polygonAdjusted = [
         ...polygon,
         ...polygon.slice(0, Math.min(order, polygon.length - 1))
     ];
     for (let t = 0; t < 1; t += 1 / resolution) {
-        output.push(bSpline_1.default(t, Math.min(order, polygon.length - 1), polygonAdjusted));
+        output.push(bSpline(t, Math.min(order, polygon.length - 1), polygonAdjusted));
     }
     return output;
 }
-exports.smoothBSpline = smoothBSpline;
-function smoothPolygon(polygon, order, resolution) {
-    if (lodash_1.default.isArray(polygon[0])) {
+export function smoothPolygon(polygon, order, resolution) {
+    if (_.isArray(polygon[0])) {
         return smoothBSpline(polygon, order, resolution);
     }
     else if (polygon.isComplex) {
-        let outPoly = new MyPolygon_1.default();
+        let outPoly = new MyPolygon();
         outPoly.polygon = smoothBSpline(polygon.polygon, order, resolution);
         outPoly.contours = polygon.contours.map(ctr => {
             return smoothBSpline(ctr, order, resolution);
@@ -74,5 +69,4 @@ function smoothPolygon(polygon, order, resolution) {
         throw new Error('wat');
     }
 }
-exports.smoothPolygon = smoothPolygon;
 //# sourceMappingURL=polygonNamespace.js.map

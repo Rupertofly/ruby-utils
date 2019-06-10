@@ -3,7 +3,7 @@ interface CapOpts extends ICCaptureOptions {
   target: HTMLCanvasElement | HTMLElement;
 }
 
-export default class Capturer extends CCapture {
+export class Capturer extends CCapture {
   len: number;
   isFinite: boolean;
   isStarted = false;

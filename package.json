@@ -1,10 +1,11 @@
 {
-  "name": "@my/rubyq-utils",
+  "name": "rubyq-utils",
   "version": "1.0.0",
   "description": "myUtils",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "install": "tsc"
   },
   "types": "dist/index.d.ts",
   "author": "Ruby Quail",
@@ -17,6 +18,9 @@
     "victor": "^1.1.0"
   },
   "devDependencies": {
+    "@types/d3": "^5.7.2",
+    "@types/lodash": "^4.14.134",
+    "@types/victor": "^1.1.0",
     "typescript": "^3.5.1"
   }
 }

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Capturer extends CCapture {
+export default class Capturer extends CCapture {
     constructor(opts) {
         super(opts);
         this.isStarted = false;
@@ -38,5 +36,4 @@ class Capturer extends CCapture {
             return;
     }
 }
-exports.default = Capturer;
 //# sourceMappingURL=CCapture.js.map

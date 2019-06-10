@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const d3 = require("d3");
-const cl = require("js-clipper");
-const MyPolygon_1 = require("./MyPolygon");
-function cleanPolygon(polygon, ammount) {
+import * as d3 from 'd3';
+import * as cl from 'js-clipper';
+import MyPolygon from './MyPolygon';
+export function cleanPolygon(polygon, ammount) {
     let adjPoly = toClipperFormat(polygon);
     return fromClipperFormat(cl.JS.Clean(adjPoly, ammount * 10000));
 }
-exports.cleanPolygon = cleanPolygon;
-function joinPolygons(polygons) {
+export function joinPolygons(polygons) {
     let procPoly = [];
     let isLoop = true;
     if (polygons[0].offset) {
@@ -30,17 +27,16 @@ function joinPolygons(polygons) {
     clipper.Execute(cl.ClipType.ctUnion, solution, cl.PolyFillType.pftEvenOdd, cl.PolyFillType.pftEvenOdd);
     let result = cl.JS.PolyTreeToExPolygons(solution);
     if (!result[0])
-        return new MyPolygon_1.default(fromClipperFormat(procPoly[0]));
+        return new MyPolygon(fromClipperFormat(procPoly[0]));
     else if (result.length < 2)
-        return new MyPolygon_1.default(result[0]);
+        return new MyPolygon(result[0]);
     else {
         return result
-            .map(pl => new MyPolygon_1.default(pl))
+            .map(pl => new MyPolygon(pl))
             .sort((a, b) => d3.polygonArea(a.polygon) - d3.polygonArea(b.polygon))[0];
     }
 }
-exports.joinPolygons = joinPolygons;
-function offsetPolygon(poly, ammount, jType) {
+export function offsetPolygon(poly, ammount, jType) {
     let adjustedPoly = toClipperFormat(poly);
     let amt = 1000 * ammount;
     const offset = new cl.ClipperOffset();
@@ -57,14 +53,12 @@ function offsetPolygon(poly, ammount, jType) {
             .sort((a, b) => d3.polygonArea(a) - d3.polygonArea(b))[0];
     }
 }
-exports.offsetPolygon = offsetPolygon;
-function fromClipperFormat(polygon) {
+export function fromClipperFormat(polygon) {
     return polygon.map(pt => {
         return [pt.X / 10000, pt.Y / 10000];
     });
 }
-exports.fromClipperFormat = fromClipperFormat;
-function toClipperFormat(polygon) {
+export function toClipperFormat(polygon) {
     let thePoly = polygon.map(pt => {
         return {
             X: Math.floor(pt[0] * 10000),
@@ -73,7 +67,6 @@ function toClipperFormat(polygon) {
     });
     return thePoly;
 }
-exports.toClipperFormat = toClipperFormat;
 /**
  * clip polygons using js-clipper
  *
@@ -85,7 +78,7 @@ exports.toClipperFormat = toClipperFormat;
  * @param {number} [cleanLen] amount to clean by
  * @returns {MyPolygon[]} result
  */
-function clipPolygons(clipFunc, subPoly, clipPoly, clean, cleanLen) {
+export function clipPolygons(clipFunc, subPoly, clipPoly, clean, cleanLen) {
     let wSub = subPoly.flatMap(pol => pol.toJSPaths());
     let wClip = clipPoly.flatMap(p => p.toJSPaths());
     if (clean) {
@@ -106,8 +99,7 @@ function clipPolygons(clipFunc, subPoly, clipPoly, clean, cleanLen) {
         Clip.AddPaths(wClip, cl.PolyType.ptClip, true);
     let solution = new cl.PolyTree();
     Clip.Execute(clipFunc, solution, cl.PolyFillType.pftEvenOdd, cl.PolyFillType.pftEvenOdd);
-    let result = cl.JS.PolyTreeToExPolygons(solution).map(ep => new MyPolygon_1.default(ep));
+    let result = cl.JS.PolyTreeToExPolygons(solution).map(ep => new MyPolygon(ep));
     return result;
 }
-exports.clipPolygons = clipPolygons;
 //# sourceMappingURL=JSClipperHelper.js.map
