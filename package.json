@@ -1,0 +1,22 @@
+{
+  "name": "@my/rubyq-utils",
+  "version": "1.0.0",
+  "description": "myUtils",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "types": "dist/index.d.ts",
+  "author": "Ruby Quail",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^5.9.2",
+    "js-clipper": "^1.0.1",
+    "lodash": "^4.17.11",
+    "simplex-noise": "^2.4.0",
+    "victor": "^1.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.5.1"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": false,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es5",
+    "declaration": true,
+    "outDir": "./dist",
+    "strict": true,
+    "lib": ["esnext", "dom"]
+  },
+  "include": ["index.ts", "./src/*"]
+}
