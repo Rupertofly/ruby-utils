@@ -121,7 +121,7 @@ export class MyPolygon {
     return output;
   }
   round( ammount: number ) {
-    const inPath = `M ${this.polygon.join( 'L' )}Z`
+    const inPath = `M ${this.polygon.map(pt => pt.join(',')).join( 'L' )}Z`
     return roundPathCorners( inPath, ammount, false );
   }
   private _drawP5(c: ctx) {

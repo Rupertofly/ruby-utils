@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "install": "tsc -p tsconfig.json"
+    "install": "tsc -p ./tsconfig.json"
   },
   "types": "dist/index.d.ts",
   "author": "Ruby Quail",
@@ -15,12 +15,12 @@
     "js-clipper": "^1.0.1",
     "lodash": "^4.17.11",
     "simplex-noise": "^2.4.0",
+    "@types/p5": "^0.7.2",
     "victor": "^1.1.0"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/lodash": "^4.14.134",
-    "@types/p5": "^0.7.2",
     "@types/victor": "^1.1.0",
     "typescript": "^3.5.1"
   }
