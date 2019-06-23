@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/lodash": "^4.14.134",
+    "@types/p5": "^0.7.2",
     "@types/victor": "^1.1.0",
     "typescript": "^3.5.1"
   }
