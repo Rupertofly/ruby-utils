@@ -115,6 +115,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 dist
+*.js
+*.js.map
 ### Web ###
 
 # End of https://www.gitignore.io/api/web,osx,node
