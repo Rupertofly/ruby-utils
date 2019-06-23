@@ -9,7 +9,7 @@ export default class Noise {
   private _isSn: boolean;
   constructor(func: (x: number, y: number) => number, diam: number);
   constructor(diam: number);
-  constructor(...args: any) {
+  constructor(...args: any[]) {
     if (typeof args[0] !== 'function') {
       this.thisFunc = (x: number, y: number) => p5.noise2D(x, y);
       this._isSn = true;
