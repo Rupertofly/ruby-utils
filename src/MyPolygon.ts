@@ -58,7 +58,7 @@ export class MyPolygon {
   public offset(ammount: number, jointype?: cl.JoinType) {
     if (!this.isComplex()) {
       this.polygon = JSC.offsetPolygon(this.polygon, ammount, jointype);
-      return this;
+      return [this] as MyPolygon[];
     } else {
       let working: cl.ExPolygon = { outer: null, holes: null };
       working.outer = JSC.toClipperFormat(this.polygon);
@@ -74,7 +74,7 @@ export class MyPolygon {
       let success = offset.Execute(result, amt);
       let resEx = cl.JS.PolyTreeToExPolygons(result);
       if (!resEx[0]) {
-        return [this];
+        return [this] as MyPolygon[];
       } else {
         let wkEx = this.FromJSExPoly(resEx[0]);
         this.polygon = wkEx.polygon;
@@ -89,7 +89,7 @@ export class MyPolygon {
       }
     }
 
-    return this;
+    return [this];
   }
   public offsetOne( ammount: number, JoinType?: cl.JoinType ) {
     return this.offset( ammount, JoinType )[0] as MyPolygon;

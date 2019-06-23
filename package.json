@@ -4,8 +4,7 @@
   "description": "myUtils",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "install": "tsc -p ./tsconfig.json"
+    "build": "tsc"
   },
   "types": "dist/index.d.ts",
   "author": "Ruby Quail",
