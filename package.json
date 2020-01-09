@@ -1,5 +1,5 @@
 {
-  "name": "rubyq-utils",
+  "name": "@rupertofly/rubyq-utils",
   "version": "1.0.0",
   "description": "myUtils",
   "main": "dist/index.js",

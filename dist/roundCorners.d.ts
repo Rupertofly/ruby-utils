@@ -1,7 +1,12 @@
-declare type inputPoint = {
+declare type ipt = {
     x: number;
     y: number;
-    radius?: number;
 };
-export declare function roundedPoly(ctx: CanvasRenderingContext2D, points: inputPoint[], radiusAll: number): void;
+/**
+ * Draws a polygon with rounded corners
+ * @param {CanvasRenderingContext2D} ctx The canvas context
+ * @param {Array} points A list of `{x, y}` points
+ * @radius {number} how much to round the corners
+ */
+export declare function myRoundPolly(ctx: CanvasRenderingContext2D, points: ipt[], radius: number): void;
 export {};

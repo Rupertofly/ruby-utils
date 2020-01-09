@@ -1,1 +1,1 @@
-
+export { myRoundPolly } from './roundCorners';
