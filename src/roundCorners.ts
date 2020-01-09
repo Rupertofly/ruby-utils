@@ -1,149 +1,114 @@
-/**
- * SVG Path rounding function. Takes an input path string and outputs a path
- * string where all line-line corners have been rounded. Only supports absolute
- * commands at the moment.
- * 
- * @param pathString The SVG input path
- * @param radius The amount to round the corners, either a value in the SVG 
- *               coordinate space, or, if useFractionalRadius is true, a value
- *               from 0 to 1.
- * @param useFractionalRadius If true, the curve radius is expressed as a
- *               fraction of the distance between the point being curved and
- *               the previous and next points.
- * @returns A new SVG path string with the rounding
- */
-export function roundPathCorners(pathString: string, radius: number, useFractionalRadius: boolean) {
-  function moveTowardsLength(movingPoint, targetPoint, amount) {
-    var width = (targetPoint.x - movingPoint.x);
-    var height = (targetPoint.y - movingPoint.y);
-    
-    var distance = Math.sqrt(width*width + height*height);
-    
-    return moveTowardsFractional(movingPoint, targetPoint, Math.min(1, amount / distance));
-  }
-  function moveTowardsFractional(movingPoint, targetPoint, fraction) {
-    return {
-      x: movingPoint.x + (targetPoint.x - movingPoint.x)*fraction,
-      y: movingPoint.y + (targetPoint.y - movingPoint.y)*fraction
-    };
-  }
-  
-  // Adjusts the ending position of a command
-  function adjustCommand(cmd, newPoint) {
-    if (cmd.length > 2) {
-      cmd[cmd.length - 2] = newPoint.x;
-      cmd[cmd.length - 1] = newPoint.y;
-    }
-  }
-  
-  // Gives an {x, y} object for a command's ending position
-  function pointForCommand(cmd) {
-    return {
-      x: parseFloat(cmd[cmd.length - 2]),
-      y: parseFloat(cmd[cmd.length - 1]),
-    };
-  }
-  
-  // Split apart the path, handing concatonated letters and numbers
-  var pathParts = pathString
-    .split(/[,\s]/)
-    .reduce(function(parts:any, part){
-      var match = part.match("([a-zA-Z])(.+)");
-      if (match) {
-        parts.push(match[1]);
-        parts.push(match[2]);
+type pt = { x: number; y: number };
+type inputPoint = { x: number; y: number; radius?: number };
+export function roundedPoly(
+  ctx: CanvasRenderingContext2D,
+  points: inputPoint[],
+  radiusAll: number
+) {
+  let i: number,
+    x: number,
+    y: number,
+    len: number,
+    p1,
+    p2,
+    p3,
+    v1,
+    v2,
+    sinA,
+    sinA90,
+    radDirection,
+    drawDirection,
+    angle,
+    halfAngle,
+    cRadius,
+    lenOut,
+    radius;
+  // convert 2 points into vector form, polar form, and normalised
+  var asVec = function(p: pt, pp: pt, v) {
+    v.x = pp.x - p.x;
+    v.y = pp.y - p.y;
+    v.len = Math.sqrt(v.x * v.x + v.y * v.y);
+    v.nx = v.x / v.len;
+    v.ny = v.y / v.len;
+    v.ang = Math.atan2(v.ny, v.nx);
+  };
+  radius = radiusAll;
+  v1 = {};
+  v2 = {};
+  len = points.length;
+  p1 = points[len - 1];
+  // for each point
+  for (i = 0; i < len; i++) {
+    p2 = points[i % len];
+    p3 = points[(i + 1) % len];
+    //-----------------------------------------
+    // Part 1
+    asVec(p2, p1, v1);
+    asVec(p2, p3, v2);
+    sinA = v1.nx * v2.ny - v1.ny * v2.nx;
+    sinA90 = v1.nx * v2.nx - v1.ny * -v2.ny;
+    angle = Math.asin(sinA);
+    //-----------------------------------------
+    radDirection = 1;
+    drawDirection = false;
+    if (sinA90 < 0) {
+      if (angle < 0) {
+        angle = Math.PI + angle;
       } else {
-        parts.push(part);
+        angle = Math.PI - angle;
+        radDirection = -1;
+        drawDirection = true;
       }
-      
-      return parts;
-    }, []);
-  
-  // Group the commands with their arguments for easier handling
-  var commands = pathParts.reduce(function(commands, part) {
-    if (parseFloat(part) == part && commands.length) {
-      commands[commands.length - 1].push(part);
     } else {
-      commands.push([part]);
-    }
-    
-    return commands;
-  }, []);
-  
-  // The resulting commands, also grouped
-  var resultCommands:any[] = [];
-  
-  if (commands.length > 1) {
-    var startPoint = pointForCommand(commands[0]);
-    
-    // Handle the close path case with a "virtual" closing line
-    var virtualCloseLine:any[]|null = null;
-    if (commands[commands.length - 1][0] == "Z" && commands[0].length > 2) {
-      virtualCloseLine = ["L", startPoint.x, startPoint.y];
-      commands[commands.length - 1] = virtualCloseLine;
-    }
-    
-    // We always use the first command (but it may be mutated)
-    resultCommands.push(commands[0]);
-    
-    for (var cmdIndex=1; cmdIndex < commands.length; cmdIndex++) {
-      var prevCmd = resultCommands[resultCommands.length - 1];
-      
-      var curCmd = commands[cmdIndex];
-      
-      // Handle closing case
-      var nextCmd = (curCmd == virtualCloseLine)
-        ? commands[1]
-        : commands[cmdIndex + 1];
-      
-      // Nasty logic to decide if this path is a candidite.
-      if (nextCmd && prevCmd && (prevCmd.length > 2) && curCmd[0] == "L" && nextCmd.length > 2 && nextCmd[0] == "L") {
-        // Calc the points we're dealing with
-        var prevPoint = pointForCommand(prevCmd);
-        var curPoint = pointForCommand(curCmd);
-        var nextPoint = pointForCommand(nextCmd);
-        
-        // The start and end of the cuve are just our point moved towards the previous and next points, respectivly
-        var curveStart, curveEnd;
-        
-        if (useFractionalRadius) {
-          curveStart = moveTowardsFractional(curPoint, prevCmd.origPoint || prevPoint, radius);
-          curveEnd = moveTowardsFractional(curPoint, nextCmd.origPoint || nextPoint, radius);
-        } else {
-          curveStart = moveTowardsLength(curPoint, prevPoint, radius);
-          curveEnd = moveTowardsLength(curPoint, nextPoint, radius);
-        }
-        
-        // Adjust the current command and add it
-        adjustCommand(curCmd, curveStart);
-        curCmd.origPoint = curPoint;
-        resultCommands.push(curCmd);
-        
-        // The curve control points are halfway between the start/end of the curve and
-        // the original point
-        var startControl = moveTowardsFractional(curveStart, curPoint, .5);
-        var endControl = moveTowardsFractional(curPoint, curveEnd, .5);
-  
-        // Create the curve 
-        var curveCmd:any = ["C", startControl.x, startControl.y, endControl.x, endControl.y, curveEnd.x, curveEnd.y];
-        // Save the original point for fractional calculations
-        curveCmd.origPoint = curPoint;
-        resultCommands.push(curveCmd);
-      } else {
-        // Pass through commands that don't qualify
-        resultCommands.push(curCmd);
+      if (angle > 0) {
+        radDirection = -1;
+        drawDirection = true;
       }
     }
-    
-    // Fix up the starting point and restore the close path if the path was orignally closed
-    if (virtualCloseLine) {
-      var newStartPoint = pointForCommand(resultCommands[resultCommands.length-1]);
-      resultCommands.push(["Z"]);
-      adjustCommand(resultCommands[0], newStartPoint);
+    if (p2.radius !== undefined) {
+      radius = p2.radius;
+    } else {
+      radius = radiusAll;
     }
-  } else {
-    resultCommands = commands;
+    //-----------------------------------------
+    // Part 2
+    halfAngle = angle / 2;
+    //-----------------------------------------
+
+    //-----------------------------------------
+    // Part 3
+    lenOut = Math.abs((Math.cos(halfAngle) * radius) / Math.sin(halfAngle));
+    //-----------------------------------------
+
+    //-----------------------------------------
+    // Special part A
+    if (lenOut > Math.min(v1.len / 2, v2.len / 2)) {
+      lenOut = Math.min(v1.len / 2, v2.len / 2);
+      cRadius = Math.abs((lenOut * Math.sin(halfAngle)) / Math.cos(halfAngle));
+    } else {
+      cRadius = radius;
+    }
+    //-----------------------------------------
+    // Part 4
+    x = p2.x + v2.nx * lenOut;
+    y = p2.y + v2.ny * lenOut;
+    //-----------------------------------------
+    // Part 5
+    x += -v2.ny * cRadius * radDirection;
+    y += v2.nx * cRadius * radDirection;
+    //-----------------------------------------
+    // Part 6
+    ctx.arc(
+      x,
+      y,
+      cRadius,
+      v1.ang + (Math.PI / 2) * radDirection,
+      v2.ang - (Math.PI / 2) * radDirection,
+      drawDirection
+    );
+    //-----------------------------------------
+    p1 = p2;
+    p2 = p3;
   }
-  
-  return resultCommands.reduce(function(str, c){ return str + c.join(" ") + " "; }, "") as any;
+  ctx.closePath();
 }

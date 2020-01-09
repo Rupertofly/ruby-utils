@@ -1,21 +1,23 @@
-import p5 from 'p5';
 import { curveStep } from 'd3';
 import * as cl from 'js-clipper';
-import _ from 'lodash';
 import * as JSC from './JSClipperHelper';
 import * as PGN from './polygonNamespace';
-import { roundPathCorners } from './roundCorners';
 type vecFunc = (x: number, y: number) => void;
 type point = [number, number];
 type loop = point[];
 type lp = loop;
 type ctx = CanvasRenderingContext2D;
 interface cmdLst {
-  vertex: ( x: number, y: number ) => any;
-  cubic: ( c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number, ) => any;
+  vertex: (x: number, y: number) => any;
+  cubic: (
+    c1x: number,
+    c1y: number,
+    c2x: number,
+    c2y: number,
+    x: number,
+    y: number
+  ) => any;
   close: () => void;
-  
-
 }
 export class MyPolygon {
   public polygon: Array<[number, number]> = [];
@@ -40,8 +42,8 @@ export class MyPolygon {
           this.contours.push(JSC.fromClipperFormat(hole));
         });
       }
-    } else if (_.isArray(polygon)) {
-      this.polygon = polygon;
+    } else if ((polygon as loop).length != undefined) {
+      this.polygon = polygon as loop;
     } else {
       throw new Error('Wrong Type');
     }
@@ -91,8 +93,8 @@ export class MyPolygon {
 
     return [this];
   }
-  public offsetOne( ammount: number, JoinType?: cl.JoinType ) {
-    return this.offset( ammount, JoinType )[0] as MyPolygon;
+  public offsetOne(ammount: number, JoinType?: cl.JoinType) {
+    return this.offset(ammount, JoinType)[0] as MyPolygon;
   }
   public draw(context: CanvasRenderingContext2D): this;
   public draw(oFunc: vecFunc, cFunc?: vecFunc): this;
@@ -119,10 +121,6 @@ export class MyPolygon {
       return JSC.fromClipperFormat(hl);
     });
     return output;
-  }
-  round( ammount: number ) {
-    const inPath = 'M' + this.polygon.join( 'L' ) + 'Z';
-    return roundPathCorners( inPath, ammount, false );
   }
   private _drawP5(c: ctx) {
     c.beginPath();
