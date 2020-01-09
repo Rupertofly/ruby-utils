@@ -9,7 +9,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+dist/**/*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -115,5 +115,4 @@ Network Trash Folder
 Temporary Items
 .apdisk
 ### Web ###
-dist
 # End of https://www.gitignore.io/api/web,osx,node
