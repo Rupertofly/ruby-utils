@@ -4,7 +4,8 @@
   "description": "myUtils",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "tsc"
   },
   "types": "dist/index.d.ts",
   "author": "Ruby Quail",
