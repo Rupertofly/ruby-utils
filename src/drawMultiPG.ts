@@ -1,3 +1,6 @@
+type point = [number, number];
+type loop = point[];
+type loops = loop[];
 function _drawPG(
   pg: loop,
   context: CanvasRenderingContext2D,

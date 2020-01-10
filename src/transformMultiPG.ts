@@ -1,3 +1,6 @@
+type point = [number, number];
+type loop = point[];
+type loops = loop[];
 type callbackfunction = (
   value: number,
   vecIndex: number,
