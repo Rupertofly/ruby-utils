@@ -1,2 +1,3 @@
-type pt = [number, number];
-type loop = pt[];
+type point = [number, number];
+type loop = point[];
+type loops = loop[];
