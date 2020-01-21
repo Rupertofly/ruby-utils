@@ -10,7 +10,7 @@ type propFunc<T> = (c: regl.DefaultContext, p: T) => glPrim;
 interface newActionOptions<Props> {
   uniforms?: { [uf: string]: glPrim | propFunc<Props> };
   attributes?: { [uf: string]: glPrim | propFunc<Props> };
-  framebuffer?: { [uf: string]: glPrim | propFunc<Props> };
+  framebuffer?: glPrim | propFunc<Props>;
   primitive?: regl.PrimitiveType;
   count?: number;
 }
