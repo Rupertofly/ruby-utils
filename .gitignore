@@ -116,3 +116,4 @@ Temporary Items
 .apdisk
 ### Web ###
 # End of https://www.gitignore.io/api/web,osx,node
+test/dist
