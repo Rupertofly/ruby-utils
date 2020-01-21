@@ -10,5 +10,6 @@
     "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "exclude": ["node_modules", "dist", "wip"]
+  "exclude": ["node_modules", "dist", "wip"],
+  "include": ["./src/*"]
 }
