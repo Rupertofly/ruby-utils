@@ -8,7 +8,7 @@ function _drawPG(
 ) {
   context.moveTo(...pg[0]);
   for (let i = 1; i < pg.length; i++) {
-    context.lineTo(...pg[1]);
+    context.lineTo(...pg[i]);
   }
   closed && context.closePath();
 }
